@@ -1,5 +1,7 @@
 package arm;
 
+import iron.object.ParticleSystem;
+import armory.trait.physics.RigidBody;
 import iron.Trait;
 import iron.object.Object;
 import iron.object.CameraObject;
@@ -42,8 +44,15 @@ class VehicleBody extends Trait {
 	var suspensionRestLength = 0.3;
 	var rollInfluence = 0.1;
 	var transformDuration = false;
+	
+	var boostMode = false;
+	var boostStartTime = 0.0;
 
 	var MAX_SPEED=480;
+
+	var boost0:ParticleSystem = null;
+	var boost1:ParticleSystem = null;
+	
 
     // km/h * 1h/60min * 1min/60sec * 1000m/km
 	// 300 km/h in 4.8 sec (double the speed of F1)
@@ -173,6 +182,16 @@ class VehicleBody extends Trait {
 
 		// register material link callback
 		Uniforms.externalFloatLinks.push(floatLink);
+
+		var mo = cast(iron.Scene.active.root.getChild("model.boost0.particle"), iron.object.MeshObject);
+        boost0 = mo.particleSystems.length > 0 ? mo.particleSystems[0] : null;
+		if (boost0 == null) mo.particleOwner.particleSystems[0];
+		boost0.disableLifetime();
+
+		mo = cast(iron.Scene.active.root.getChild("model.boost1.particle"), iron.object.MeshObject);
+        boost1 = mo.particleSystems.length > 0 ? mo.particleSystems[0] : null;
+		if (boost1 == null) mo.particleOwner.particleSystems[0];
+		boost1.disableLifetime();
 	}
 
 	function floatLink(object:Object, mat:MaterialData, link:String):Null<kha.FastFloat> {
@@ -208,9 +227,9 @@ class VehicleBody extends Trait {
 		var left = keyboard.down("left");
 		var right = keyboard.down("right");
 		var brake = keyboard.down("down");
+		var actionBoost = false;
+		var actionTransform = false;
 
-		var actionTransformStart = keyboard.down("x");
-		var actionTransformEnd = keyboard.released("x");
         if(gamepad != null)
         {
 			if (Math.abs(gamepad.rightStick.x) > 0.1)
@@ -239,24 +258,25 @@ class VehicleBody extends Trait {
 				brake = true;
 			}
 
-			if (gamepad.down("x") > 0.0)
-			{
-				actionTransformStart = true;
-		        actionTransformEnd = false;
-			}
-			else
-			{
-				actionTransformStart = false;
-		        actionTransformEnd = true;
-			}
+			actionTransform = gamepad.started("x");
+			actionBoost = gamepad.started("o");
 		}
 
+		// check keyboard input one more time
+		if (actionTransform == false)
+		{
+			actionTransform = keyboard.started("x");
+		}
+		
+		if (actionBoost == false)
+		{
+			actionBoost = keyboard.started("s");
+		}
 
-		actionTransformStart = keyboard.down("x");
-		actionTransformEnd = keyboard.released("x");
-
-		if (actionTransformStart) {
-			if (transformDuration == false) {
+		if (actionTransform) {
+			// Only allow transfomration if boost is not enable
+			if (boostMode == false)
+			{
 				transformDuration = true;
 
 				if (state == 0) {
@@ -274,8 +294,41 @@ class VehicleBody extends Trait {
 			}
 		}
 
-		if (actionTransformEnd) {
-			transformDuration = false;
+		if(actionBoost)
+		{
+			// only can boost in aero mode
+			if(state == 1 && boostMode == false)
+			{
+				boostMode = true;
+				MAX_SPEED=700;
+				boostStartTime = Time.realTime();
+
+				boost0.enableLifetime();
+				boost1.enableLifetime();
+			}
+			// disable boost if is enable
+			else if(boostMode == true)
+			{
+				boostMode = false;
+				MAX_SPEED=530;
+
+				boost0.disableLifetime();
+				boost1.disableLifetime();
+			}
+		}
+
+		if(boostMode)
+		{
+			var deltaBoosTime = Time.realTime() - boostStartTime;
+			// Auto disable boost when time is up
+			if(deltaBoosTime > 10) 
+			{
+				boostMode = false;
+				MAX_SPEED=530;
+
+				boost0.disableLifetime();
+				boost1.disableLifetime();
+			}
 		}
 
 		breakState = false;
@@ -337,14 +390,7 @@ class VehicleBody extends Trait {
 
 			// Try to capture before transform, but undefined/null for new properties
             var wheelInfo = vehicle.getWheelInfo(i);
-			//trace("wheel " + i);
-			//trace( "m_suspensionStiffness " + wheelInfo.m_suspensionStiffness);
-			//trace( "m_bIsFrontWheel " + wheelInfo.m_bIsFrontWheel);
-			//trace( "m_deltaRotation " + wheelInfo.m_deltaRotation);
-			//trace( "m_wheelsRadius " + wheelInfo.m_wheelsRadius);
-			//trace( "m_raycastInfo.m_isInContact " +  wheelInfo.m_raycastInfo.m_isInContact);
-			//trace( "speed " + (wheelInfo.m_wheelsRadius * 2 * 3.1415 ) * (wheelInfo.m_deltaRotation / Time.step));
-			
+
 			if (wheelInfo.m_bIsFrontWheel)
 			{
                 // Apply steering to the front wheels
@@ -359,6 +405,16 @@ class VehicleBody extends Trait {
 		        vehicle.setBrake(breakingForce, i);
 		    }
 			
+			
+				var wheelEffectController = object.getChild(wheelNames[i] + ".particle").getTrait(WheelController);
+			if (brake == true && speed > 100)
+			{
+				wheelEffectController.isBrakeEffect = true;
+			}
+			else 
+			{
+				wheelEffectController.isBrakeEffect = false;
+			}
 
 			// Synchronize the wheels with the chassis worldtransform
 			// update the second parameters to false to let the wheel stay at chasis
@@ -382,7 +438,6 @@ class VehicleBody extends Trait {
 		transform.loc.add(up);
 		transform.dirty = true;
 
-
 		// TODO: fix parent matrix update
 		if (camera.parent != null)
 			camera.parent.transform.buildMatrix();
@@ -405,11 +460,19 @@ class VehicleBody extends Trait {
 		var cInfo = BtRigidBodyConstructionInfo.create(mass, myMotionState, shape, localInertia);
 
 		var body = BtRigidBody.create(cInfo);
+		
 		body.setLinearVelocity(BtVector3.create(0, 0, 0));
 		body.setAngularVelocity(BtVector3.create(0, 0, 0));
-		physics.world.addRigidBody(body);
 
-		return body;
+		//physics.world.addRigidBody(body);
+
+		var rigidBody = new armory.trait.physics.bullet.RigidBody(1.0, 8, 0.5, 0.0, 0.0,
+						0.04, 0.1, false,
+						null, null,1, false, null, false, true, body);
+		rigidBody.object = this.object;
+		rigidBody.init();
+		
+		return rigidBody.body;
 	}
 
 	#if arm_azerty

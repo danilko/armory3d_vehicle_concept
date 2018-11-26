@@ -1,13 +1,20 @@
 # armory3d_vehicle_concept
 Vehicle Game concept with [Armory3D](https://armory3d.org/) vehicle
 
-Tested with Armory 3D v0.5
+Tested with Armory 3D v0.5 + latest haxebullet patches
 
 Game test examples in [Youtube](https://www.youtube.com/watch?v=RyByMUVhOqY&list=PLlwvRbWsWmGUUe2uKpWygh3pMONI4PnzM)
 https://www.youtube.com/watch?v=RyByMUVhOqY&list=PLlwvRbWsWmGUUe2uKpWygh3pMONI4PnzM
 
 ### Source Code License
 All source codes and configurations as part of of this repo is under Apache License
+
+#### Armory3D Patches
+The current code base require patches to armory sdk
+The patch files are in armory_patch folder for armory and iron
+Pull requests are following
+https://github.com/armory3d/armory/pull/1024
+https://github.com/armory3d/iron/pull/52
 
 ### Textures License
 All textures used are either Blender include Grid textures or textures from [CC0 Textures](https://cc0textures.com)
@@ -29,11 +36,13 @@ The source/updated of the vehicle model is at [BlenderSwap](https://www.blendswa
 - Down Arrow to brake
 - Left/Right Arrow to steer
 - x to transform
+- s to enable boost/disable boost (boost will only be enabled in certain transform)
 
 #### PS4 Controller
 - R2 to accelerate
 - L2 to brake
 - Left stick to steer
 - X to transform
+- O to enable boost/disable boost (boost will only be enabled in certain transform)
 
  
