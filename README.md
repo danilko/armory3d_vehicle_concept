@@ -7,7 +7,7 @@ Tested with Armory 3D v0.5 + latest haxebullet patches
 
 Game test examples in [Youtube](https://www.youtube.com/watch?v=MNTmtQ_nrE4&list=PLlwvRbWsWmGUUe2uKpWygh3pMONI4PnzM)
 
-[![Youtube Video Demo](http://img.youtube.com/vi/MNTmtQ_nrE4/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+[![Youtube Video Demo](http://img.youtube.com/vi/MNTmtQ_nrE4/0.jpg)](http://www.youtube.com/watch?v=MNTmtQ_nrE4)
 
 
 ![Screenshot0](/screenshots/screenshot_0.png?raw=true "Screenshot 0")
