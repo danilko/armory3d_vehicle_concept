@@ -10,9 +10,9 @@ Game test examples in [Youtube](https://www.youtube.com/watch?v=MNTmtQ_nrE4&list
 [![Youtube Video Demo](http://img.youtube.com/vi/MNTmtQ_nrE4/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
 
 
-![Screenshot1](/screenshots/screenshot_1.png?raw=true "Screenshot 1")
+![Screenshot0](/screenshots/screenshot_0.png?raw=true "Screenshot 0")
 
-![Screenshot2](/screenshots/screenshot_2.png?raw=true "Screenshot 2")
+![Screenshot1](/screenshots/screenshot_1.png?raw=true "Screenshot 1")
 
 ### Source Code License
 All source codes and configurations as part of of this repo is under Apache License
