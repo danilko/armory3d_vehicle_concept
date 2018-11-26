@@ -3,8 +3,16 @@ Vehicle Game concept with [Armory3D](https://armory3d.org/) vehicle
 
 Tested with Armory 3D v0.5 + latest haxebullet patches
 
-Game test examples in [Youtube](https://www.youtube.com/watch?v=RyByMUVhOqY&list=PLlwvRbWsWmGUUe2uKpWygh3pMONI4PnzM)
-https://www.youtube.com/watch?v=RyByMUVhOqY&list=PLlwvRbWsWmGUUe2uKpWygh3pMONI4PnzM
+
+
+Game test examples in [Youtube](https://www.youtube.com/watch?v=MNTmtQ_nrE4&list=PLlwvRbWsWmGUUe2uKpWygh3pMONI4PnzM)
+
+[![Youtube Video Demo](http://img.youtube.com/vi/MNTmtQ_nrE4/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+
+
+![Screenshot1](/screenshots/screenshot_1.png?raw=true "Screenshot 1")
+
+![Screenshot2](/screenshots/screenshot_2.png?raw=true "Screenshot 2")
 
 ### Source Code License
 All source codes and configurations as part of of this repo is under Apache License
