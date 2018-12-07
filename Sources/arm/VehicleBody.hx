@@ -37,7 +37,8 @@ class VehicleBody extends Trait {
 	var carChassis:BtRigidBodyPointer;
 	// Formula 1 Based https://en.wikipedia.org/wiki/Formula_One_car#Acceleration
 	var chassis_mass = 1000.0;
-	var wheelFriction = 500;
+	//var wheelFriction = 500;
+	var wheelFriction = 10;
 	var suspensionStiffness = 40.0;
 	var suspensionDamping = 2.3;
 	var suspensionCompression = 4.4;
@@ -164,7 +165,7 @@ class VehicleBody extends Trait {
 			wheel.m_wheelsDampingCompression = suspensionCompression;
 			wheel.m_frictionSlip = wheelFriction;
 			if (i >= wheels.length - 2) {
-				wheel.m_frictionSlip = wheelFriction * 1.2;
+				wheel.m_frictionSlip = wheelFriction * 0.8;
 			}
 			wheel.m_rollInfluence = rollInfluence;
 		}
