@@ -164,9 +164,6 @@ class VehicleBody extends Trait {
 			wheel.m_wheelsDampingRelaxation = suspensionDamping;
 			wheel.m_wheelsDampingCompression = suspensionCompression;
 			wheel.m_frictionSlip = wheelFriction;
-			if (i >= wheels.length - 2) {
-				wheel.m_frictionSlip = wheelFriction * 0.8;
-			}
 			wheel.m_rollInfluence = rollInfluence;
 		}
 		
@@ -372,10 +369,10 @@ class VehicleBody extends Trait {
 
 		if (left) {
 			if (vehicleSteering < steeringLimit)
-				vehicleSteering += steer * 0.25 * Time.step;
+				vehicleSteering += Time.step;
 		} else if (right) {
 			if (vehicleSteering > (steeringLimit * -1))
-				vehicleSteering -= steer * 0.25 * Time.step;
+				vehicleSteering -= Time.step;
 		} else if (vehicleSteering != 0) {
 			var step = Math.abs(vehicleSteering) < Time.step ? Math.abs(vehicleSteering) : Time.step;
 			if (vehicleSteering > 0)
@@ -384,14 +381,30 @@ class VehicleBody extends Trait {
 				vehicleSteering += step;
 		}
 
-        //carChassis.applyCentralForce(new BtVector3(0,0,-1000));
+        // Try to use central force to simulate slide, but seem not fully working
+		var steerCentralForce = 10000;
+        if(left){
+           carChassis.applyCentralForce(
+			   BtVector3.create(
+				   steerCentralForce * transform.world.right().x, 
+				   steerCentralForce * transform.world.right().y,
+				   steerCentralForce * transform.world.right().z));
+		}
+		else if(right){
+			steerCentralForce = steerCentralForce * -1;
+           carChassis.applyCentralForce(
+			   BtVector3.create(
+				   steerCentralForce * transform.world.right().x, 
+				   steerCentralForce * transform.world.right().y,
+				   steerCentralForce * transform.world.right().z));
+		}
 
 		// iron.Scene.active.getTrait(CanvasScript).getElement("steering").text = "" + vehicleSteering;
 		for (i in 0...vehicle.getNumWheels()) {
 
 			// Try to capture before transform, but undefined/null for new properties
             var wheelInfo = vehicle.getWheelInfo(i);
-
+			
 			if (wheelInfo.m_bIsFrontWheel)
 			{
                 // Apply steering to the front wheels
@@ -421,6 +434,8 @@ class VehicleBody extends Trait {
 			// update the second parameters to false to let the wheel stay at chasis
 			vehicle.updateWheelTransform(i, false);
 			// Update wheels transforms
+
+
 
 			var trans = vehicle.getWheelTransformWS(i);
 			var p = trans.getOrigin();
