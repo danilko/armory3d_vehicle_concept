@@ -1,9 +1,10 @@
 # armory3d_vehicle_concept
+
+This repo is no longer maintained and is not compatible with latest armory (please refer to latest armory vehicle setup)
+
 Vehicle Game concept with [Armory3D](https://armory3d.org/) vehicle
 
 Tested with Armory 3D v0.5 + latest haxebullet patches
-
-
 
 Game test examples in [Youtube](https://www.youtube.com/watch?v=MNTmtQ_nrE4&list=PLlwvRbWsWmGUUe2uKpWygh3pMONI4PnzM)
 
