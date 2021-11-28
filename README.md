@@ -1,6 +1,8 @@
 # armory3d_vehicle_concept
 
-This repo is no longer maintained and is not compatible with latest armory (please refer to latest armory vehicle setup)
+This repo is no longer maintained and is not compatible with latest armory (please refer to latest armory vehicle setup).
+
+A similar project with Godot Engine implementation is [https://github.com/danilko/arcrade-race-game](https://github.com/danilko/arcrade-race-game)
 
 Vehicle Game concept with [Armory3D](https://armory3d.org/) vehicle
 
